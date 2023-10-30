@@ -51,16 +51,16 @@ def home():
     whiteboard_id = get_whiteborad_id()
     cache_key = f'{whiteboard_id}'
 
-    if cache.get(cache_key):  # 如果缓存存在，则直接从缓存中提取数据
-        return cache.get(cache_key)['data']
+    # if cache.get(cache_key):  # 如果缓存存在，则直接从缓存中提取数据
+    #     return cache.get(cache_key)['data']
+    # else:
+    if whiteboard_id:
+        req = get_hepta_data(whiteboard_id)
     else:
-        if whiteboard_id:
-            req = get_hepta_data(whiteboard_id)
-        else:
-            return {"msg": "no data"}
-        HEPTABASE_DATA = {'result': 'success', 'code': req['code'],
-                          'data': req['data'], 'time': int(time.time())}
-        return HEPTABASE_DATA
+        return {"msg": "no data"}
+    HEPTABASE_DATA = {'result': 'success', 'code': req['code'],
+                      'data': req['data'], 'time': int(time.time())}
+    return HEPTABASE_DATA
 
 
 @app.route('/update')
