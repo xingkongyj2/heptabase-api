@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request
 from flask_caching import Cache
 import requests
@@ -5,7 +7,7 @@ import time
 import json
 from flask_cors import CORS
 
-# Jiang 的数字花园 ID
+# 数字花园 ID
 HEPTABASE_WHITEBOARD_ID = 'f2accb05f60e7b294aebcc871ecf35feaa0ab146b0f741308c6d00746e043f34'
 
 # 存储 heptabase base 数据
@@ -16,8 +18,8 @@ def get_whiteborad_id():
     '''
     获取 whiteborad ID
     '''
-    whiteboard_id = request.args.get('whiteboard_id')
-    if(whiteboard_id):
+    whiteboard_id = HEPTABASE_WHITEBOARD_ID
+    if whiteboard_id:
         return whiteboard_id
     else:
         return None
@@ -29,8 +31,8 @@ def get_hepta_data(whiteboard_id):
     '''
 
     req = requests.get(
-        'https://app.heptabase.com/api/whiteboard/?secret='+whiteboard_id)
-    if(req.status_code != 200):
+        'https://app.heptabase.com/api/whiteboard/?secret=' + whiteboard_id)
+    if (req.status_code != 200):
         return {'code': req.status_code, 'data': ''}
     else:
         return {'code': req.status_code, 'data': json.loads(req.text)}
@@ -52,17 +54,10 @@ def home():
     if cache.get(cache_key):  # 如果缓存存在，则直接从缓存中提取数据
         return cache.get(cache_key)['data']
     else:
-
-        if(whiteboard_id):
+        if whiteboard_id:
             req = get_hepta_data(whiteboard_id)
         else:
-            # 返回 Jiang 的数字花园数据
-            with open('data.json', mode='r') as my_file:
-                req = my_file.read()
-                req = json.loads(req)
-                return {'result': 'success', 'code': req['code'],
-                        'data': req['data'], 'time': int(time.time())}
-
+            return {"msg": "no data"}
         HEPTABASE_DATA = {'result': 'success', 'code': req['code'],
                           'data': req['data'], 'time': int(time.time())}
         return HEPTABASE_DATA
