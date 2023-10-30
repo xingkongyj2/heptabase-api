@@ -77,7 +77,7 @@ def update():
     HEPTABASE_DATA = {'result': 'success',
                       'data': req_json, 'time': int(time.time())}
 
-    cache.set(cache_key, HEPTABASE_DATA, timeout=3600)  # 更新缓存并设置新的超时时间
+    #cache.set(cache_key, HEPTABASE_DATA, timeout=3600)  # 更新缓存并设置新的超时时间
 
     return HEPTABASE_DATA
 
